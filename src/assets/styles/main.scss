@@ -257,7 +257,7 @@ html *::-webkit-scrollbar-track {
 }
 
 .form-content {
-  max-height: calc(100vh - 120px);
+  max-height: 400px;
   overflow-y: auto;
   // -ms-overflow-style: none; /* Internet Explorer 10+ */
   // scrollbar-width: none; /* Firefox */
