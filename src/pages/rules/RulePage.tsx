@@ -85,6 +85,16 @@ const RulePage: FC = () => {
     setRules(newRules);
   };
 
+  const removeWhenCondition = (
+    ruleIdx: number,
+    whenGroupIdx: number,
+    conditionIdx: number
+  ) => {
+    const newRules = structuredClone(rules);
+    newRules[ruleIdx].when![whenGroupIdx].conditions.splice(conditionIdx, 1);
+    setRules(newRules);
+  };
+
   return (
     <>
       {contextHolder}
@@ -315,7 +325,7 @@ const RulePage: FC = () => {
                                       />
                                     </Form.Item>
                                   </Col>
-                                  <Col span={8}>
+                                  <Col span={7}>
                                     <Form.Item
                                       name={[
                                         "when",
@@ -376,6 +386,22 @@ const RulePage: FC = () => {
                                         }}
                                       />
                                     </Form.Item>
+                                  </Col>
+                                  <Col span={1}>
+                                    <ColorButton
+                                      type="text"
+                                      size="small"
+                                      style={{ marginTop: "4px" }}
+                                      onClick={() =>
+                                        removeWhenCondition(
+                                          ruleIdx,
+                                          whenGroupIdx,
+                                          conditionIdx
+                                        )
+                                      }
+                                    >
+                                      <BiTrashAlt color="red" />
+                                    </ColorButton>
                                   </Col>
                                 </Row>
                               )
