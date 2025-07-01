@@ -5,14 +5,13 @@ import NavBar from "./nav-bar";
 import { Outlet } from "react-router-dom";
 import { PageLoading } from "@/pages/loading";
 import { Drawer, type MenuProps } from "antd";
-import { TbFileImport, TbFileExport } from "react-icons/tb";
-import { FaTasks } from "react-icons/fa";
+import { FaMoneyCheckAlt } from "react-icons/fa";
 
 const menu: MenuProps["items"] = [
   {
-    label: "Tasks",
-    key: "tasks",
-    icon: <FaTasks size="20" />,
+    label: "Quản trị Rule",
+    key: "rules",
+    icon: <FaMoneyCheckAlt size="20" />,
   },
 ];
 

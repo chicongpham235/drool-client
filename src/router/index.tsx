@@ -9,20 +9,20 @@ import { setTableState } from "@/stores/features/table";
 import { useAppDispatch } from "@/stores/hook";
 
 const NotFound = lazy(() => import("@/pages/404"));
-const TaskPage = lazy(() => import("@/pages/tasks"));
+const RulePage = lazy(() => import("@/pages/rules"));
 
 const routeList: RouteObject[] = [
   {
     path: "/",
-    element: <Navigate to="/tasks" />,
+    element: <Navigate to="/rules" />,
   },
   {
     path: "/",
     element: <WrapperRouteComponent element={<LayoutPage />} />,
     children: [
       {
-        path: "tasks",
-        element: <TaskPage />,
+        path: "rules",
+        element: <RulePage />,
       },
     ],
   },

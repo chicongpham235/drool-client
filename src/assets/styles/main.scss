@@ -13,7 +13,7 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
+  color: black;
   background-color: #ffffff;
 
   font-synthesis: none;
@@ -257,7 +257,7 @@ html *::-webkit-scrollbar-track {
 }
 
 .form-content {
-  max-height: 400px !important;
+  max-height: calc(100vh - 120px);
   overflow-y: auto;
   // -ms-overflow-style: none; /* Internet Explorer 10+ */
   // scrollbar-width: none; /* Firefox */
