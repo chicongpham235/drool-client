@@ -2,7 +2,6 @@ import { FC, useEffect, useRef, useState } from "react";
 import { Button, Col, Form, Input, InputNumber, notification, Row } from "antd";
 import PageContainer from "@/layout/PageContainer";
 import { FaMoneyCheckAlt } from "react-icons/fa";
-import { SiMicrosoftexcel } from "react-icons/si";
 import ColorButton from "@/components/button";
 import { WhenGroup } from "@/interface/rule";
 import { BiTrashAlt } from "react-icons/bi";
@@ -11,6 +10,13 @@ const RulePage: FC = () => {
   const [noti, contextHolder] = notification.useNotification();
   const [form] = Form.useForm();
   const rowRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    form.setFieldValue("salience", 0);
+    form.setFieldValue("then", [
+      { object: "Transaction", action: "setFee", value: "" },
+    ]);
+  }, []);
 
   const [whenGroups, setWhenGroups] = useState<WhenGroup[]>([]);
 
@@ -37,17 +43,6 @@ const RulePage: FC = () => {
       operator: "",
       value: "",
     });
-    setWhenGroups(newWhenGroups);
-  };
-
-  const setWhenCondition = (
-    whenGroupIdx: number,
-    conditionIdx: number,
-    field: string,
-    value: string
-  ) => {
-    const newWhenGroups = structuredClone(whenGroups);
-    newWhenGroups[whenGroupIdx].conditions[conditionIdx][field] = value;
     setWhenGroups(newWhenGroups);
   };
 
@@ -95,7 +90,6 @@ const RulePage: FC = () => {
                   ]}
                 >
                   <InputNumber
-                    defaultValue={0}
                     min={0}
                     precision={0}
                     style={{ width: "100%" }}
@@ -109,7 +103,7 @@ const RulePage: FC = () => {
               </Col>
               <Col span={24}>
                 <Row gutter={16}>
-                  <Col span={12}>When</Col>
+                  <Col span={12}>Tổ hợp điều kiện</Col>
                   <Col span={12}>
                     <ColorButton
                       type="primary"
@@ -122,7 +116,7 @@ const RulePage: FC = () => {
                   </Col>
                 </Row>
                 <>
-                  {whenGroups.map((whenGroup, whenGroupIdx) => {
+                  {whenGroups.map((_whenGroup, whenGroupIdx) => {
                     return (
                       <Row
                         gutter={16}
@@ -141,7 +135,7 @@ const RulePage: FC = () => {
                         </Col>
                         <Col span={23}>
                           <Form.Item
-                            name={["whenGroups", whenGroupIdx, "object"]}
+                            name={["when", whenGroupIdx, "object"]}
                             label="Đối tượng"
                             rules={[
                               {
@@ -150,21 +144,10 @@ const RulePage: FC = () => {
                               },
                             ]}
                           >
-                            <Input
-                              placeholder="Đối tượng"
-                              type="text"
-                              value={whenGroup.object}
-                              onChange={(e) => {
-                                const newWhenGroups =
-                                  structuredClone(whenGroups);
-                                newWhenGroups[whenGroupIdx].object =
-                                  e.target.value;
-                                setWhenGroups(newWhenGroups);
-                              }}
-                            />
+                            <Input placeholder="Đối tượng" type="text" />
                           </Form.Item>
                           <Form.Item
-                            name={["whenGroups", whenGroupIdx, "conditions"]}
+                            name={["when", whenGroupIdx, "conditions"]}
                           >
                             <Row gutter={16}>
                               <Col span={23}>Điều kiện</Col>
@@ -179,9 +162,9 @@ const RulePage: FC = () => {
                                 </ColorButton>
                               </Col>
                             </Row>
-                            {whenGroup.conditions &&
-                              whenGroup.conditions.map(
-                                (condition, conditionIdx) => {
+                            {_whenGroup.conditions &&
+                              _whenGroup.conditions.map(
+                                (_condition, conditionIdx) => {
                                   return (
                                     <Row
                                       gutter={16}
@@ -196,7 +179,7 @@ const RulePage: FC = () => {
                                       <Col span={8}>
                                         <Form.Item
                                           name={[
-                                            "whenGroups",
+                                            "when",
                                             whenGroupIdx,
                                             "conditions",
                                             conditionIdx,
@@ -212,22 +195,13 @@ const RulePage: FC = () => {
                                           <Input
                                             placeholder="Trường"
                                             type="text"
-                                            value={condition.field}
-                                            onChange={(e) => {
-                                              setWhenCondition(
-                                                whenGroupIdx,
-                                                conditionIdx,
-                                                "field",
-                                                e.target.value
-                                              );
-                                            }}
                                           />
                                         </Form.Item>
                                       </Col>
                                       <Col span={8}>
                                         <Form.Item
                                           name={[
-                                            "whenGroups",
+                                            "when",
                                             whenGroupIdx,
                                             "conditions",
                                             conditionIdx,
@@ -243,22 +217,13 @@ const RulePage: FC = () => {
                                           <Input
                                             placeholder="Toán tử"
                                             type="text"
-                                            value={condition.operator}
-                                            onChange={(e) => {
-                                              setWhenCondition(
-                                                whenGroupIdx,
-                                                conditionIdx,
-                                                "operator",
-                                                e.target.value
-                                              );
-                                            }}
                                           />
                                         </Form.Item>
                                       </Col>
                                       <Col span={8}>
                                         <Form.Item
                                           name={[
-                                            "whenGroups",
+                                            "when",
                                             whenGroupIdx,
                                             "conditions",
                                             conditionIdx,
@@ -274,15 +239,6 @@ const RulePage: FC = () => {
                                           <Input
                                             placeholder="Giá trị"
                                             type="text"
-                                            value={condition.value}
-                                            onChange={(e) => {
-                                              setWhenCondition(
-                                                whenGroupIdx,
-                                                conditionIdx,
-                                                "value",
-                                                e.target.value
-                                              );
-                                            }}
                                           />
                                         </Form.Item>
                                       </Col>
@@ -296,6 +252,30 @@ const RulePage: FC = () => {
                     );
                   })}
                 </>
+              </Col>
+              <Col span={24} style={{ paddingTop: "24px" }}>
+                <Row gutter={16}>
+                  <Col span={24}>Biểu thức tính phí</Col>
+                  <Col span={0} style={{ display: "none" }}>
+                    <Form.Item name={["then", 0, "object"]}></Form.Item>
+                  </Col>
+                  <Col span={0} style={{ display: "none" }}>
+                    <Form.Item name={["then", 0, "action"]}></Form.Item>
+                  </Col>
+                  <Col span={24}>
+                    <Form.Item
+                      name={["then", 0, "value"]}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Vui lòng nhập biểu thức tính phí",
+                        },
+                      ]}
+                    >
+                      <Input placeholder="Biểu thức tính phí" type="text" />
+                    </Form.Item>
+                  </Col>
+                </Row>
               </Col>
             </Row>
           </Form>
