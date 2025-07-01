@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { Button, Col, Form, Input, InputNumber, notification, Row } from "antd";
 import PageContainer from "@/layout/PageContainer";
 import { FaMoneyCheckAlt } from "react-icons/fa";
@@ -37,6 +37,17 @@ const RulePage: FC = () => {
       operator: "",
       value: "",
     });
+    setWhenGroups(newWhenGroups);
+  };
+
+  const setWhenCondition = (
+    whenGroupIdx: number,
+    conditionIdx: number,
+    field: string,
+    value: string
+  ) => {
+    const newWhenGroups = structuredClone(whenGroups);
+    newWhenGroups[whenGroupIdx].conditions[conditionIdx][field] = value;
     setWhenGroups(newWhenGroups);
   };
 
@@ -115,7 +126,7 @@ const RulePage: FC = () => {
                     return (
                       <Row
                         gutter={16}
-                        key={whenGroupIdx}
+                        key={"whenGroup-" + whenGroupIdx}
                         style={{ paddingTop: "8px" }}
                       >
                         <Col span={1}>
@@ -168,6 +179,117 @@ const RulePage: FC = () => {
                                 </ColorButton>
                               </Col>
                             </Row>
+                            {whenGroup.conditions &&
+                              whenGroup.conditions.map(
+                                (condition, conditionIdx) => {
+                                  return (
+                                    <Row
+                                      gutter={16}
+                                      style={{ paddingTop: "8px" }}
+                                      key={
+                                        "whenGroup-" +
+                                        whenGroupIdx +
+                                        "-condition-" +
+                                        conditionIdx
+                                      }
+                                    >
+                                      <Col span={8}>
+                                        <Form.Item
+                                          name={[
+                                            "whenGroups",
+                                            whenGroupIdx,
+                                            "conditions",
+                                            conditionIdx,
+                                            "field",
+                                          ]}
+                                          rules={[
+                                            {
+                                              required: true,
+                                              message: "Vui lòng nhập trường",
+                                            },
+                                          ]}
+                                        >
+                                          <Input
+                                            placeholder="Trường"
+                                            type="text"
+                                            value={condition.field}
+                                            onChange={(e) => {
+                                              setWhenCondition(
+                                                whenGroupIdx,
+                                                conditionIdx,
+                                                "field",
+                                                e.target.value
+                                              );
+                                            }}
+                                          />
+                                        </Form.Item>
+                                      </Col>
+                                      <Col span={8}>
+                                        <Form.Item
+                                          name={[
+                                            "whenGroups",
+                                            whenGroupIdx,
+                                            "conditions",
+                                            conditionIdx,
+                                            "operator",
+                                          ]}
+                                          rules={[
+                                            {
+                                              required: true,
+                                              message: "Vui lòng chọn toán tử",
+                                            },
+                                          ]}
+                                        >
+                                          <Input
+                                            placeholder="Toán tử"
+                                            type="text"
+                                            value={condition.operator}
+                                            onChange={(e) => {
+                                              setWhenCondition(
+                                                whenGroupIdx,
+                                                conditionIdx,
+                                                "operator",
+                                                e.target.value
+                                              );
+                                            }}
+                                          />
+                                        </Form.Item>
+                                      </Col>
+                                      <Col span={8}>
+                                        <Form.Item
+                                          name={[
+                                            "whenGroups",
+                                            whenGroupIdx,
+                                            "conditions",
+                                            conditionIdx,
+                                            "value",
+                                          ]}
+                                          rules={[
+                                            {
+                                              required: true,
+                                              message: "Vui lòng chọn giá trị",
+                                            },
+                                          ]}
+                                        >
+                                          <Input
+                                            placeholder="Giá trị"
+                                            type="text"
+                                            value={condition.value}
+                                            onChange={(e) => {
+                                              setWhenCondition(
+                                                whenGroupIdx,
+                                                conditionIdx,
+                                                "value",
+                                                e.target.value
+                                              );
+                                            }}
+                                          />
+                                        </Form.Item>
+                                      </Col>
+                                    </Row>
+                                  );
+                                }
+                              )}
                           </Form.Item>
                         </Col>
                       </Row>
