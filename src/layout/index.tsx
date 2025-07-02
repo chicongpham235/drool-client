@@ -6,12 +6,18 @@ import { Outlet } from "react-router-dom";
 import { PageLoading } from "@/pages/loading";
 import { Drawer, type MenuProps } from "antd";
 import { FaMoneyCheckAlt } from "react-icons/fa";
+import { TbTransactionDollar } from "react-icons/tb";
 
 const menu: MenuProps["items"] = [
   {
     label: "Quản trị Rule",
     key: "rules",
     icon: <FaMoneyCheckAlt size="20" />,
+  },
+  {
+    label: "Giao dịch",
+    key: "transactions",
+    icon: <TbTransactionDollar size="20" />,
   },
 ];
 

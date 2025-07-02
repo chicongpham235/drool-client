@@ -10,6 +10,7 @@ import { useAppDispatch } from "@/stores/hook";
 
 const NotFound = lazy(() => import("@/pages/404"));
 const RulePage = lazy(() => import("@/pages/rules"));
+const FeePage = lazy(() => import("@/pages/fee"));
 
 const routeList: RouteObject[] = [
   {
@@ -23,6 +24,16 @@ const routeList: RouteObject[] = [
       {
         path: "rules",
         element: <RulePage />,
+      },
+    ],
+  },
+  {
+    path: "/",
+    element: <WrapperRouteComponent element={<LayoutPage />} />,
+    children: [
+      {
+        path: "transactions",
+        element: <FeePage />,
       },
     ],
   },
