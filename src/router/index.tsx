@@ -11,6 +11,7 @@ import { useAppDispatch } from "@/stores/hook";
 const NotFound = lazy(() => import("@/pages/404"));
 const RulePage = lazy(() => import("@/pages/rules"));
 const FeePage = lazy(() => import("@/pages/fee"));
+const TargetPage = lazy(() => import("@/pages/targets"));
 
 const routeList: RouteObject[] = [
   {
@@ -38,24 +39,34 @@ const routeList: RouteObject[] = [
     ],
   },
   {
+    path: "/",
+    element: <WrapperRouteComponent element={<LayoutPage />} />,
+    children: [
+      {
+        path: "targets",
+        element: <TargetPage />,
+      },
+    ],
+  },
+  {
     path: "*",
     element: <NotFound />,
   },
 ];
 
 const RenderRouter: FC = () => {
-  const location = useLocation();
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(
-      setTableState({
-        pagination: {
-          itemsPerPage: 10,
-          page: 1,
-        },
-      })
-    );
-  }, [location]);
+  // const location = useLocation();
+  // const dispatch = useAppDispatch();
+  // useEffect(() => {
+  //   dispatch(
+  //     setTableState({
+  //       pagination: {
+  //         itemsPerPage: 10,
+  //         page: 1,
+  //       },
+  //     })
+  //   );
+  // }, [location]);
 
   const element = useRoutes(routeList);
   return element;

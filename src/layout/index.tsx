@@ -7,6 +7,7 @@ import { PageLoading } from "@/pages/loading";
 import { Drawer, type MenuProps } from "antd";
 import { FaMoneyCheckAlt } from "react-icons/fa";
 import { TbTransactionDollar } from "react-icons/tb";
+import { FiTarget } from "react-icons/fi";
 
 const menu: MenuProps["items"] = [
   {
@@ -18,6 +19,11 @@ const menu: MenuProps["items"] = [
     label: "Giao dịch",
     key: "transactions",
     icon: <TbTransactionDollar size="20" />,
+  },
+  {
+    label: "Chỉ tiêu",
+    key: "targets",
+    icon: <FiTarget size="20" />,
   },
 ];
 
