@@ -1,24 +1,18 @@
 import keycloak from "./keycloak";
 
-const initKeycloak = (onAuthenticatedCallback: Function, logout: Function) => {
+const initKeycloak = (onAuthenticatedCallback: Function) => {
   // khởi tạo đối tượng keycloak
   keycloak
     .init({
-      onLoad: "check-sso",
-      enableLogging: true,
-      pkceMethod: "S256",
-      silentCheckSsoRedirectUri:
-        window.location.origin + "/silent-check-sso.html",
+      onLoad: "login-required",
     })
     .then((authenticated: boolean) => {
       if (!authenticated) {
-        logout();
+        console.log("user is not authenticated..!");
       }
-      return onAuthenticatedCallback();
+      onAuthenticatedCallback();
     })
-    .catch((e) => {
-      return console.error;
-    });
+    .catch(console.error);
 };
 
 const getKeyCloack = () => keycloak;

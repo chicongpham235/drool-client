@@ -7,11 +7,9 @@ import { Suspense } from "react";
 import { PageLoading } from "./pages/loading";
 import { getInitData } from "./stores/features/auth";
 import { useDispatch } from "react-redux";
-import UserService from "./keycloak/userService";
 
 function App() {
   // const { loading } = useSelector((state: any) => state.global);
-  UserService.doLogin();
   const dispatch = useDispatch<any>();
   dispatch(getInitData());
   return (
