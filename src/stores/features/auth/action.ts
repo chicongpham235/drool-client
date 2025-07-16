@@ -1,44 +1,54 @@
 import { ActionReducerMapBuilder, createAsyncThunk } from "@reduxjs/toolkit";
-import { apiGetMe, apiLogin, apiLogout } from "@/api/auth/auth.api";
-import { getToken, setToken } from "@/api/auth/helper";
+import { setToken } from "@/api/auth/helper";
 
 import { AuthState } from "@/interface/store/auth";
 import { LoginParams } from "@/interface/user/login";
-import { setDataToken } from "@/api/auth";
-import { convertErrorAxios } from "@/api/axios/error";
-import { LaravelAuthErrorResponse } from "@/interface/axios/laravel";
+import UserService from "@/keycloak/userService";
 
 export const loginAction = createAsyncThunk(
   "auth/login",
-  async (data: LoginParams, { dispatch, rejectWithValue }) => {
+  async ({}, { dispatch, rejectWithValue }) => {
     try {
-      const response = await apiLogin(data);
-      setDataToken(response);
+      // Use Keycloak login instead of API
+      await UserService.doLogin();
+
+      // After successful login, get user info
       dispatch(getInfoAction());
-      return response;
+
+      return { success: true };
     } catch (err: any) {
-      const res = convertErrorAxios<LaravelAuthErrorResponse>(err);
-      if (res.type === "axios-error") {
-        //type is available here
-        const { response } = res.error;
-        if (response) return rejectWithValue(response.data);
-      }
-      return rejectWithValue(err);
+      return rejectWithValue(err.message || "Login failed");
     }
   }
 );
 export const logoutAction = createAsyncThunk("auth/logout", async () => {
-  const response = await apiLogout();
-  return response;
+  // Use Keycloak logout instead of API
+  await UserService.doLogout();
+  return { success: true };
 });
 export const getInfoAction = createAsyncThunk("auth/me", async () => {
-  const response = await apiGetMe();
-  return response;
+  // Use Keycloak to get user info instead of API
+  const isLoggedIn = UserService.isLoggedIn();
+
+  if (!isLoggedIn) {
+    throw new Error("User is not authenticated");
+  }
+
+  // Extract user info from Keycloak token
+  const userInfo = await UserService.getUserInfo();
+
+  // Return user info in the expected format
+  return userInfo;
 });
 export const getInitData = createAsyncThunk(
   "auth/init",
   async (_, { dispatch }) => {
-    if (getToken()) dispatch(getInfoAction());
+    // Use Keycloak to check if user is logged in
+    if (UserService.isLoggedIn()) {
+      dispatch(getInfoAction());
+    } else {
+      dispatch(loginAction());
+    }
   }
 );
 
@@ -55,7 +65,6 @@ export const loginReduces = (builder: ActionReducerMapBuilder<AuthState>) => {
     .addCase(loginAction.rejected, (state, action: any) => {
       state.loading = false;
       state.logged = false;
-      if (action.error) state.errorMessage = action.payload.message;
     });
 };
 export const getInfoReduces = (builder: ActionReducerMapBuilder<AuthState>) => {
@@ -65,7 +74,7 @@ export const getInfoReduces = (builder: ActionReducerMapBuilder<AuthState>) => {
     })
     .addCase(getInfoAction.fulfilled, (state, action) => {
       state.loadingInfo = false;
-      state.currentUser = action.payload.user;
+      state.currentUser = action.payload;
     })
     .addCase(getInfoAction.rejected, (state) => {
       state.loadingInfo = false;
@@ -89,5 +98,6 @@ export function logoutState(state: AuthState) {
   state.errorMessage = "";
   state.logged = false;
   state.loading = false;
+  // Clear token using Keycloak instead of setToken
   setToken("");
 }

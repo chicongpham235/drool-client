@@ -1,5 +1,4 @@
-import { KeycloakEnum } from "../enum/KeyCloakEnum";
-import keycloak from "./keycloack";
+import keycloak from "./keycloak";
 
 const initKeycloak = (onAuthenticatedCallback: Function, logout: Function) => {
   // khởi tạo đối tượng keycloak
@@ -13,7 +12,7 @@ const initKeycloak = (onAuthenticatedCallback: Function, logout: Function) => {
     })
     .then((authenticated: boolean) => {
       if (!authenticated) {
-        isSSO && logout();
+        logout();
       }
       return onAuthenticatedCallback();
     })
@@ -34,6 +33,8 @@ const isLoggedIn = () => keycloak.authenticated; // kiểm tra trạng thái đ�
 
 const getUsername = () => keycloak.tokenParsed?.realm_access; // lấy thông tin user
 
+const getUserInfo = async () => await keycloak.loadUserProfile();
+
 const hasRole = (roles: string[]) =>
   roles.some((role: string) => keycloak.hasRealmRole(role)); // kiểm tra quyền
 
@@ -46,6 +47,7 @@ const UserService = {
   getUsername,
   hasRole,
   getKeyCloack,
+  getUserInfo,
 };
 
 export default UserService;
