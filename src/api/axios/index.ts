@@ -6,7 +6,8 @@ import {
 import { ContentTypeEnum, VAxios } from "./axios";
 
 import { getBackEndUrl } from "@/constant";
-import { getToken } from "../auth/helper";
+// import { getToken } from "../auth/helper";
+import UserService from "@/keycloak/userService";
 import merge from "lodash.merge";
 import { GlobalHandlers } from "./error-handle";
 
@@ -25,7 +26,7 @@ const transform: AxiosTransform = {
     }
 
     if (!withoutToken) {
-      const temp_token = getToken();
+      const temp_token = UserService.getToken();
       config.headers.Authorization = authenticationScheme
         ? `${authenticationScheme} ${temp_token}`
         : temp_token;

@@ -21,7 +21,7 @@ const menu: MenuProps["items"] = [
     icon: <TbTransactionDollar size="20" />,
   },
   {
-    label: "Chỉ tiêu",
+    label: "Tham số",
     key: "targets",
     icon: <FiTarget size="20" />,
   },
